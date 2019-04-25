@@ -1,0 +1,63 @@
+apiVersion: v1
+items:
+- apiVersion: v1
+  kind: Service
+  metadata:
+    namespace: mvs-pipeline
+    name: docker
+  spec:
+    type: NodePort
+    ports:
+    - name: 'docker'
+      port: 2375
+      targetPort: 2375
+    selector:
+      app: docker
+
+- apiVersion: v1
+  kind: Service
+  metadata:
+    namespace: mvs-pipeline
+    name: docker-mvs
+  spec:
+    type: NodePort
+    ports:
+    - name: 'docker-mvs'
+      port: 10000
+      targetPort: 8080
+    selector:
+      app: docker
+
+- apiVersion: extensions/v1beta1
+  kind: Deployment
+  metadata:
+    namespace: mvs-pipeline
+    labels:
+      app: docker
+    name: docker
+  spec:
+    replicas: 1
+    strategy: {}
+    template:
+      metadata:
+        labels:
+          app: docker
+      spec:
+        containers:
+        - image: registry.sbx.zone/docker:dind
+          name: docker
+          resources: {}
+          stdin: true
+          tty: true
+          securityContext:
+            allowPrivilegeEscalation: true
+            capabilities: {}
+            privileged: true
+            procMount: Default
+            readOnlyRootFilesystem: false
+            runAsNonRoot: false
+        restartPolicy: Always
+
+kind: List
+metadata: {}
+

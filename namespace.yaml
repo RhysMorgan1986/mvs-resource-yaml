@@ -1,0 +1,6 @@
+kind: Namespace
+apiVersion: v1
+metadata:
+  name: mvs-pipeline
+  labels:
+    name: mvs-pipeline
